@@ -1,7 +1,7 @@
 name: flutter_debouncer
 description: A Flutter plugin for debouncing can be used to simplify the implementation of debouncing logic in Flutter applications, making it easier to handle user interactions effectively.
 version: 1.0.0
-homepage: https://github.com/syaifakmal/flutter_debouncer
+homepage: https://github.com/syaifakmal/flutter-debouncer
 
 environment:
   sdk: '>=2.19.4 <3.0.0'
