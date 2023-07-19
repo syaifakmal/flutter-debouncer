@@ -14,6 +14,7 @@ class Debouncer {
           print('Error occurred during debounced callback: $error');
           print(stackTrace);
         }
+        return;
       }
     });
   }
