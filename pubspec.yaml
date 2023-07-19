@@ -1,5 +1,5 @@
 name: flutter_debouncer
-description: A new Flutter project.
+description: A Flutter plugin for debouncing can be used to simplify the implementation of debouncing logic in Flutter applications, making it easier to handle user interactions effectively.
 version: 1.0.0
 homepage: https://github.com/syaifakmal/flutter_debouncer
 
