@@ -1,39 +1,59 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+## Flutter Debouncer
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A Flutter plugin for debouncing can be used to simplify the implementation of debouncing logic in Flutter applications. It provides a convenient way to handle debouncing scenarios for user interactions, such as button presses or text input changes, in order to enhance the user experience and avoid unintended actions or frequent updates.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+✅ &nbsp; Debouncing </br>
 
-## Getting started
+## Demo
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+|<img height=500 src="https://raw.githubusercontent.com/syaifakmal/flutter-debouncer/main/example/assets/debouncer_example.gif"/>|
+|---|
 
-## Usage
+## Quick Start
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+### Step 1: Include the package to your project
 
-```dart
-const like = 'sample';
+```yml
+dependencies:
+  flutter_debouncer: <latest version>
 ```
 
-## Additional information
+Run pub get and get packages.
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+### Step 2: Add this package to your project
+
+```dart
+import 'package:flutter_debouncer/flutter_debouncer.dart';
+```
+
+### Step 3: Initialize Debouncer
+
+```dart
+final Debouncer _debouncer = Debouncer();
+```
+
+## Example
+
+### Debouncer
+
+```dart
+void _handleTextFieldChange(String value) {
+    _debouncer.debounce(const Duration(milliseconds: 500), () {
+      setState(() {
+        debouncedText = value;
+      });
+    });
+  }
+```
+
+## Project Created & Maintained By
+
+### Syaif Akmal
+<a href="https://www.instagram.com/syaifakmal"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/instagram.png?raw=true" width="60">&nbsp;&nbsp;
+<a href="https://www.linkedin.com/in/syaifakmal/"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/linkedin.png?raw=true" width="60">&nbsp;&nbsp;
+<a href="https://github.com/syaifakmal/"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/github.png?raw=true" width="60">
+
+## License
+Code released under the [GNU GENERAL PUBLIC LICENSE Version 3](./LICENSE).
