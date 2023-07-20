@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 /// ensuring that the function is only invoked after a specified duration of
 /// inactivity.
 class Debouncer {
-  Timer? _timer;
+  Timer? _debounceTimer;
+  Timer? _throttleTimer;
 
   /// Debounces the provided [callback] function by canceling any existing
   /// timer and scheduling a new timer to invoke the callback after the
@@ -18,27 +19,64 @@ class Debouncer {
   /// caught and printed to the console in debug mode, along with the
   /// associated [stackTrace]. In release mode, the error will not be printed
   /// but will be silently ignored.
-  void debounce(Duration duration, Function() callback) {
-    _timer?.cancel();
-    _timer = Timer(duration, () {
+  void debounce(Duration duration, Function() onDebounce) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(duration, () {
       try {
-        callback();
+        onDebounce();
       } catch (error, stackTrace) {
         if (kDebugMode) {
           print('Error occurred during debounced callback: $error');
           print(stackTrace);
         }
-        return;
+        rethrow;
       }
     });
   }
 
-  /// Cancels any pending debounced callback.
+  /// Throttles the provided [callback] function by executing it once, and
+  /// preventing further invocations within the specified [duration].
   ///
-  /// If there is an active timer, it will be canceled, and the callback
-  /// associated with that timer will not be invoked.
+  /// If the [throttle] method is called multiple times within the [duration],
+  /// only the first call will trigger the callback. Subsequent calls during
+  /// this period will be ignored until the [duration] has passed, at which
+  /// point the callback can be triggered again.
+  ///
+  /// If an [error] occurs during the throttled callback execution, it will be
+  /// caught and printed to the console in debug mode, along with the
+  /// associated [stackTrace]. In release mode, the error will not be printed
+  /// but will be silently ignored.
+  ///
+  /// Note: The [callback] function is executed immediately upon calling
+  /// [throttle] if no previous call is active, otherwise, it will be delayed
+  /// until the next eligible time slot after the [duration].
+  void throttle(Duration duration, Function() onThrottle) {
+    if (_throttleTimer == null) {
+      _throttleTimer = Timer(duration, () {
+        _throttleTimer = null;
+      });
+      try {
+        onThrottle();
+      } catch (error, stackTrace) {
+        if (kDebugMode) {
+          print('Error occurred during throttle callback: $error');
+          print(stackTrace);
+        }
+        rethrow;
+      }
+    }
+  }
+
+  /// Cancels any pending debounced or throttled callbacks.
+  ///
+  /// If there is an active debounce timer, it will be canceled, and the
+  /// debounced callback associated with that timer will not be invoked.
+  ///
+  /// If there is an active throttle timer, it will be canceled, and the
+  /// throttled callback associated with that timer will not be invoked.
   void cancel() {
-    _timer?.cancel();
+    _debounceTimer?.cancel();
+    _throttleTimer?.cancel();
+    _throttleTimer = null;
   }
 }
-
