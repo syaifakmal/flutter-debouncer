@@ -1,5 +1,6 @@
+import 'package:example/debounce_example.dart';
+import 'package:example/throttle_example.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_debouncer/flutter_debouncer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,25 +29,8 @@ class MyScreen extends StatefulWidget {
 }
 
 class _MyScreenState extends State<MyScreen> {
-  final Debouncer _debouncer = Debouncer();
-  String normalText = '';
-  String debouncedText = '';
-
-  void _handleTextFieldChange(String value) {
-    setState(() {
-      normalText = value;
-    });
-
-    _debouncer.debounce(const Duration(milliseconds: 500), () {
-      setState(() {
-        debouncedText = value;
-      });
-    });
-  }
-
   @override
   void dispose() {
-    _debouncer.cancel();
     super.dispose();
   }
 
@@ -61,31 +45,25 @@ class _MyScreenState extends State<MyScreen> {
           padding: const EdgeInsets.all(18),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TextField(
-                onChanged: _handleTextFieldChange,
-                decoration: const InputDecoration(
-                  labelText: 'Enter text',
-                ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DebounceExample()),
+                  );
+                },
+                child: const Text('Debouncer'),
               ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Text('normalText : '),
-                  const SizedBox(width: 10),
-                  Text(normalText),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Text('debouncedText : '),
-                  const SizedBox(width: 10),
-                  Text(debouncedText),
-                ],
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ThrottleExample()),
+                  );
+                },
+                child: const Text('Throttle'),
               ),
             ],
           ),

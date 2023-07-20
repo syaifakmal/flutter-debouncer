@@ -1,3 +1,7 @@
+## [1.1.0] - [20 Jul 2023]
+
+* Add Throttle
+
 ## [1.0.2] - [19 Jul 2023]
 
 * Add Documentation
