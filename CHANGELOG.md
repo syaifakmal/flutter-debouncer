@@ -1,3 +1,7 @@
+## [1.1.1] - [20 Jul 2023]
+
+* Update ReadMe to add Throttle Example
+
 ## [1.1.0] - [20 Jul 2023]
 
 * Add Throttle
