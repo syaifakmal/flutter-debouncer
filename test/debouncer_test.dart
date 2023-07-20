@@ -23,29 +23,6 @@ void main() {
       expect(callbackCalled, true);
     });
 
-    test('Cancel cancels the currently scheduled callback', () async {
-      final debouncer = Debouncer();
-      var callbackCalled = false;
-      const duration = Duration(milliseconds: 500);
-
-      debouncer.debounce(duration, () {
-        callbackCalled = true;
-      });
-
-      // Wait for a shorter duration than the debounce duration
-      await Future.delayed(duration - const Duration(milliseconds: 100));
-
-      expect(callbackCalled, false);
-
-      // Cancel the currently scheduled callback
-      debouncer.cancel();
-
-      // Wait for the debounce duration to elapse
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      expect(callbackCalled, false);
-    });
-
     test('Multiple calls within the debounce duration cancel previous timers', () async {
       final debouncer = Debouncer();
       var callbackCalledCount = 0;
@@ -73,5 +50,30 @@ void main() {
 
       expect(callbackCalledCount, 1);
     });
+
+    test('Cancel cancels the currently scheduled callback', () async {
+      final debouncer = Debouncer();
+      var callbackCalled = false;
+      const duration = Duration(milliseconds: 500);
+
+      debouncer.debounce(duration, () {
+        callbackCalled = true;
+      });
+
+      // Wait for a shorter duration than the debounce duration
+      await Future.delayed(duration - const Duration(milliseconds: 100));
+
+      expect(callbackCalled, false);
+
+      // Cancel the currently scheduled callback
+      debouncer.cancel();
+
+      // Wait for the debounce duration to elapse
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      expect(callbackCalled, false);
+    });
   });
+
+
 }
