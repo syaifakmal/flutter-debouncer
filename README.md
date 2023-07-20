@@ -5,11 +5,13 @@ A Flutter plugin for debouncing can be used to simplify the implementation of de
 ## Features
 
 ✅ &nbsp; Debouncing </br>
+✅ &nbsp; Throttling </br>
 
 ## Demo
 
-|<img height=500 src="https://raw.githubusercontent.com/syaifakmal/flutter-debouncer/main/example/assets/debouncer_example.gif"/>|
-|---|
+| <img height=500 src="https://raw.githubusercontent.com/syaifakmal/flutter-debouncer/main/example/assets/debouncer_example.gif"/> | <img height=500 src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/throttle_example.gif?raw=true"/> |
+| --- | --- |
+
 
 ## Quick Start
 
@@ -36,7 +38,7 @@ final Debouncer _debouncer = Debouncer();
 
 ## Example
 
-### Debouncer
+### Debouncing
 
 ```dart
 void _handleTextFieldChange(String value) {
@@ -44,6 +46,18 @@ void _handleTextFieldChange(String value) {
       setState(() {
         debouncedText = value;
       });
+    });
+  }
+```
+
+### Throttling
+
+```dart
+void _handleTextFieldChange(String value) {
+    _debouncer.throttle(const Duration(milliseconds: 500), () {
+      setState(() {
+        throttledCounter++;
+       });
     });
   }
 ```
