@@ -73,7 +73,26 @@ void main() {
 
       expect(callbackCalled, false);
     });
+
+    test('Leading edge: Callback is called immediately on the first call', () async {
+      final debouncer = Debouncer();
+      var callbackCalled = false;
+      const duration = Duration(milliseconds: 500);
+
+      debouncer.debounce(duration, () {
+        callbackCalled = true;
+      }, isLeadingEdge: true);
+
+      // Wait for a shorter duration than the debounce duration
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      expect(callbackCalled, true);
+
+      // Wait for the debounce duration to elapse
+      await Future.delayed(duration);
+
+      // Ensure that the callback is called only once
+      expect(callbackCalled, true);
+    });
   });
-
-
 }

@@ -15,11 +15,21 @@ class Debouncer {
   /// The [callback] function is invoked only once, even if this method is
   /// called multiple times within the [duration].
   ///
+  ///If [isLeadingEdge] is set to `true`, the [onDebounce] function will be
+  /// invoked immediately on the first call, and any subsequent calls within
+  /// the [duration] will reset the timer, postponing the function execution
+  /// until the [duration] has elapsed without any new calls. If [isLeadingEdge]
+  /// is set to `false` (the default), the [onDebounce] function will execute
+  /// after the [duration] has passed without any new calls.
+  ///
   /// If an [error] occurs during the debounced callback execution, it will be
   /// caught and printed to the console in debug mode, along with the
   /// associated [stackTrace]. In release mode, the error will not be printed
   /// but will be silently ignored.
-  void debounce(Duration duration, Function() onDebounce) {
+  void debounce(Duration duration, Function() onDebounce, {bool isLeadingEdge = false}) {
+    if (_debounceTimer == null && isLeadingEdge) {
+      onDebounce();
+    }
     _debounceTimer?.cancel();
     _debounceTimer = Timer(duration, () {
       try {
