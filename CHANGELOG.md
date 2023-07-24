@@ -1,3 +1,7 @@
+## [1.2.1] - [24 Jul 2023]
+
+* Add leading edge to documentation
+
 ## [1.2.0] - [20 Jul 2023]
 
 * Add leading edge feature

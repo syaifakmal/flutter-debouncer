@@ -79,9 +79,13 @@ void main() {
       var callbackCalled = false;
       const duration = Duration(milliseconds: 500);
 
-      debouncer.debounce(duration, () {
-        callbackCalled = true;
-      }, isLeadingEdge: true);
+      debouncer.debounce(
+        duration,
+        () {
+          callbackCalled = true;
+        },
+        isLeadingEdge: true,
+      );
 
       // Wait for a shorter duration than the debounce duration
       await Future.delayed(const Duration(milliseconds: 100));
