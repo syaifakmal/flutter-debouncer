@@ -49,6 +49,24 @@ void _handleTextFieldChange(String value) {
     });
   }
 ```
+### Debouncing with leading edge
+
+Callback function is immediately executed at the beginning of the debounce duration.
+
+```dart
+void _handleTextFieldChange(String value) {
+    _debouncer.debounce(
+      const Duration(milliseconds: 500),
+      () {
+        setState(() {
+          debouncedText = value;
+        });
+      },
+      ///Set [isLeadingEdge] parameter to [true]
+      isLeadingEdge: true,
+    );
+  }
+```
 
 ### Throttling
 
