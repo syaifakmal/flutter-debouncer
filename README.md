@@ -49,24 +49,6 @@ void _handleTextFieldChange(String value) {
     });
   }
 ```
-### Debouncing with leading edge
-
-Callback function is immediately executed at the beginning of the debounce duration.
-
-```dart
-void _handleTextFieldChange(String value) {
-    _debouncer.debounce(
-      const Duration(milliseconds: 500),
-      () {
-        setState(() {
-          debouncedText = value;
-        });
-      },
-      ///Set [isLeadingEdge] parameter to [true]
-      isLeadingEdge: true,
-    );
-  }
-```
 
 ### Throttling
 
@@ -78,6 +60,21 @@ void _handleTextFieldChange(String value) {
        });
     });
   }
+```
+### Use type parameter to pass BehaviorType to change the behavior of the debounce or throttle
+```dart
+void _handleTextFieldChange(String value) {
+  _debouncer.debounce(
+    const Duration(milliseconds: 500),
+    () {
+      setState(() {
+        debouncedText = value;
+      });
+    },
+    ///This behavior will execute the callback immediately and after the specified time duration
+    type: BehaviorType.leadingAndTrailing
+  );
+}
 ```
 
 ## Project Created & Maintained By
