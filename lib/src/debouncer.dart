@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 
 /// The `Debouncer` class provides a mechanism to debounce function calls,
 /// ensuring that the function is only invoked after a specified duration of
@@ -15,65 +14,58 @@ class Debouncer {
   /// The [callback] function is invoked only once, even if this method is
   /// called multiple times within the [duration].
   ///
-  ///If [isLeadingEdge] is set to `true`, the [onDebounce] function will be
-  /// invoked immediately on the first call, and any subsequent calls within
-  /// the [duration] will reset the timer, postponing the function execution
-  /// until the [duration] has elapsed without any new calls. If [isLeadingEdge]
-  /// is set to `false` (the default), the [onDebounce] function will execute
-  /// after the [duration] has passed without any new calls.
+  /// The [type] parameter specifies the debounce behavior. Use [BehaviorType.trailingEdge]
+  /// to execute the [onDebounce] function after the [duration] has passed without
+  /// any new calls. Use [BehaviorType.leadingEdge] to execute the [onDebounce]
+  /// function immediately on the first call and postpone any subsequent calls
+  /// within the [duration]. Use [BehaviorType.leadingAndTrailing] to execute
+  /// the [onDebounce] function both on the leading and trailing edges of the
+  /// timer.
   ///
-  /// If an [error] occurs during the debounced callback execution, it will be
-  /// caught and printed to the console in debug mode, along with the
-  /// associated [stackTrace]. In release mode, the error will not be printed
-  /// but will be silently ignored.
-  void debounce(Duration duration, Function() onDebounce, {bool isLeadingEdge = false}) {
-    if (_debounceTimer == null && isLeadingEdge) {
+  /// [isLeadingEdge] is deprecated and may not have the desired flexibility.
+  /// It is recommended to use the [type] parameter instead.
+  void debounce(
+    Duration duration,
+    Function() onDebounce, {
+    @Deprecated("Please use the 'type' parameter instead.") bool isLeadingEdge = false,
+    BehaviorType type = BehaviorType.trailingEdge,
+  }) {
+    if (type == BehaviorType.leadingEdge || type == BehaviorType.leadingAndTrailing) {
       onDebounce();
     }
+
     _debounceTimer?.cancel();
     _debounceTimer = Timer(duration, () {
-      try {
+      if (type == BehaviorType.trailingEdge || type == BehaviorType.leadingAndTrailing) {
         onDebounce();
-      } catch (error, stackTrace) {
-        if (kDebugMode) {
-          print('Error occurred during debounced callback: $error');
-          print(stackTrace);
-        }
-        rethrow;
       }
     });
   }
 
-  /// Throttles the provided [callback] function by executing it once, and
+  /// Throttles the provided [onThrottle] function by executing it once, and
   /// preventing further invocations within the specified [duration].
   ///
   /// If the [throttle] method is called multiple times within the [duration],
-  /// only the first call will trigger the callback. Subsequent calls during
+  /// only the first call will trigger the function. Subsequent calls during
   /// this period will be ignored until the [duration] has passed, at which
-  /// point the callback can be triggered again.
+  /// point the function can be triggered again.
   ///
-  /// If an [error] occurs during the throttled callback execution, it will be
-  /// caught and printed to the console in debug mode, along with the
-  /// associated [stackTrace]. In release mode, the error will not be printed
-  /// but will be silently ignored.
-  ///
-  /// Note: The [callback] function is executed immediately upon calling
+  /// Note: The [onThrottle] function is executed immediately upon calling
   /// [throttle] if no previous call is active, otherwise, it will be delayed
   /// until the next eligible time slot after the [duration].
-  void throttle(Duration duration, Function() onThrottle) {
+  void throttle(
+    Duration duration,
+    Function() onThrottle, {
+    BehaviorType type = BehaviorType.leadingEdge,
+  }) {
     if (_throttleTimer == null) {
       _throttleTimer = Timer(duration, () {
         _throttleTimer = null;
-      });
-      try {
-        onThrottle();
-      } catch (error, stackTrace) {
-        if (kDebugMode) {
-          print('Error occurred during throttle callback: $error');
-          print(stackTrace);
+        if (type == BehaviorType.trailingEdge || type == BehaviorType.leadingAndTrailing) {
+          onThrottle();
         }
-        rethrow;
-      }
+      });
+      onThrottle();
     }
   }
 
@@ -89,4 +81,34 @@ class Debouncer {
     _throttleTimer?.cancel();
     _throttleTimer = null;
   }
+}
+
+/// Specifies the behavior type for debouncing or throttling function calls.
+///
+/// The [BehaviorType] enum is used to define how function calls are handled
+/// within the context of debouncing or throttling mechanisms. It provides
+/// options for specifying when and how the callback function is executed.
+///
+/// - [BehaviorType.trailingEdge] : The callback function is executed after the
+///   specified duration has passed without any new calls.
+/// - [BehaviorType.leadingEdge] : The callback function is executed immediately
+///   on the first call, and subsequent calls within the specified duration are
+///   ignored.
+/// - [BehaviorType.leadingAndTrailing] : The callback function is executed both
+///   on the leading and trailing edges of the timer. It is invoked immediately
+///   on the first call and after the specified duration has passed without any
+///   new calls.
+enum BehaviorType {
+  /// The callback function is executed after the specified duration has passed
+  /// without any new calls.
+  trailingEdge,
+
+  /// The callback function is executed immediately on the first call, and
+  /// subsequent calls within the specified duration are ignored.
+  leadingEdge,
+
+  /// The callback function is executed both on the leading and trailing edges
+  /// of the timer. It is invoked immediately on the first call and after the
+  /// specified duration has passed without any new calls.
+  leadingAndTrailing,
 }

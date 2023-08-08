@@ -1,3 +1,7 @@
+## [1.3.0]
+
+* Change isLeadingEdge parameter into using BehaviorType enabling more flexibility on leading edge, trailing edge or both
+
 ## [1.2.1] - [24 Jul 2023]
 
 * Add leading edge to documentation
