@@ -1,3 +1,7 @@
+## [1.3.1]
+
+* format lib/src/debouncer.art
+
 ## [1.3.0]
 
 * Change isLeadingEdge parameter into using BehaviorType enabling more flexibility on leading edge, trailing edge or both
