@@ -12,7 +12,9 @@ class _ThrottleExampleState extends State<ThrottleExample> {
   int rawCounter = 0;
   int throttledCounter = 0;
 
-  final Debouncer _debouncer = Debouncer();
+  final Throttler throttler = Throttler();
+  final Duration throttlerDuration = const Duration(milliseconds: 500);
+
   late ScrollController scrollController;
 
   @override
@@ -24,17 +26,20 @@ class _ThrottleExampleState extends State<ThrottleExample> {
         rawCounter++;
       });
 
-      _debouncer.throttle(const Duration(milliseconds: 500), () {
-        setState(() {
-          throttledCounter++;
-        });
-      });
+      throttler.throttle(
+        duration: throttlerDuration,
+        onThrottle: () {
+          setState(() {
+            throttledCounter++;
+          });
+        },
+      );
     });
   }
 
   @override
   void dispose() {
-    _debouncer.cancel();
+    throttler.cancel();
     super.dispose();
   }
 

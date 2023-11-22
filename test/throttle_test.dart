@@ -5,22 +5,31 @@ import 'package:flutter_debouncer/flutter_debouncer.dart';
 void main() {
   group('Debouncer throttle', () {
     test('Throttle function should trigger the callback once within the duration', () async {
-      final debouncer = Debouncer();
+      final throttler = Throttler();
       const duration = Duration(milliseconds: 500);
 
       int callbackCount = 0;
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      });
+      throttler.throttle(
+        duration: duration,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      });
+      throttler.throttle(
+        duration: duration,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      });
+      throttler.throttle(
+        duration: duration,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
       await Future.delayed(const Duration(milliseconds: 300));
 
@@ -34,22 +43,34 @@ void main() {
     });
 
     test('Throttle function should trigger the callback on leading edge', () async {
-      final debouncer = Debouncer();
+      final throttler = Throttler();
       const duration = Duration(milliseconds: 500);
 
       int callbackCount = 0;
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      }, type: BehaviorType.leadingEdge);
+      throttler.throttle(
+        duration: duration,
+        type: BehaviorType.leadingEdge,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      }, type: BehaviorType.leadingEdge);
+      throttler.throttle(
+        duration: duration,
+        type: BehaviorType.leadingEdge,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      }, type: BehaviorType.leadingEdge);
+      throttler.throttle(
+        duration: duration,
+        type: BehaviorType.leadingEdge,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
       await Future.delayed(const Duration(milliseconds: 300));
 
@@ -63,22 +84,34 @@ void main() {
     });
 
     test('Throttle function should trigger the callback on both edges', () async {
-      final debouncer = Debouncer();
+      final throttler = Throttler();
       const duration = Duration(milliseconds: 500);
 
       int callbackCount = 0;
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      }, type: BehaviorType.leadingAndTrailing);
+      throttler.throttle(
+        duration: duration,
+        type: BehaviorType.leadingAndTrailing,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      }, type: BehaviorType.leadingAndTrailing);
+      throttler.throttle(
+        duration: duration,
+        type: BehaviorType.leadingAndTrailing,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
-      debouncer.throttle(duration, () {
-        callbackCount++;
-      }, type: BehaviorType.leadingAndTrailing);
+      throttler.throttle(
+        duration: duration,
+        type: BehaviorType.leadingAndTrailing,
+        onThrottle: () {
+          callbackCount++;
+        },
+      );
 
       await Future.delayed(const Duration(milliseconds: 300));
 
@@ -90,6 +123,5 @@ void main() {
       // Expect that the callback is triggered once within the duration
       expect(callbackCount, 2);
     });
-
   });
 }

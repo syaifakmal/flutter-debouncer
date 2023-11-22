@@ -107,13 +107,6 @@
             </list>
           </value>
         </entry>
-        <entry key="flutter_debouncer">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/git/flutter-debouncer-27d040eda178abe59da6598ac3b0499dca421981//lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="flutter_lints">
           <value>
             <list>
@@ -404,7 +397,6 @@
       </option>
     </properties>
     <CLASSES>
-      <root url="file://$USER_HOME$/.pub-cache/git/flutter-debouncer-27d040eda178abe59da6598ac3b0499dca421981//lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-61.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-5.13.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/args-2.4.2/lib" />

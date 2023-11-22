@@ -10,6 +10,7 @@ class DebounceExample extends StatefulWidget {
 
 class _DebounceExampleState extends State<DebounceExample> {
   final Debouncer _debouncer = Debouncer();
+  final Duration debounceDuration = const Duration(milliseconds: 500);
   String normalText = '';
   String debouncedText = '';
 
@@ -18,11 +19,14 @@ class _DebounceExampleState extends State<DebounceExample> {
       normalText = value;
     });
 
-    _debouncer.debounce(const Duration(milliseconds: 500), () {
-      setState(() {
-        debouncedText = value;
-      });
-    });
+    _debouncer.debounce(
+      duration: debounceDuration,
+      onDebounce: () {
+        setState(() {
+          debouncedText = value;
+        });
+      },
+    );
   }
 
   @override

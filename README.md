@@ -17,71 +17,94 @@ A Flutter plugin for debouncing can be used to simplify the implementation of de
 
 ### Step 1: Include the package to your project
 
-```yml
-dependencies:
-  flutter_debouncer: <latest version>
-```
+```yml  
+dependencies:  
+ flutter_debouncer: <latest version>  
+```  
 
 Run pub get and get packages.
 
 ### Step 2: Add this package to your project
 
-```dart
-import 'package:flutter_debouncer/flutter_debouncer.dart';
-```
+```dart  
+import 'package:flutter_debouncer/flutter_debouncer.dart';  
+```  
 
-### Step 3: Initialize Debouncer
-
-```dart
-final Debouncer _debouncer = Debouncer();
-```
+### Step 3: Initialize Service
+#### For Debouncer
+```dart  
+final Debouncer _debouncer = Debouncer();  
+```  
+#### For Throttler
+```dart  
+final Throttle _throttler = Throttler();  
+```  
 
 ## Example
 
 ### Debouncing
 
-```dart
+```dart  
 void _handleTextFieldChange(String value) {
-    _debouncer.debounce(const Duration(milliseconds: 500), () {
-      setState(() {
-        debouncedText = value;
-      });
-    });
-  }
-```
-
-### Throttling
-
-```dart
-void _handleTextFieldChange(String value) {
-    _debouncer.throttle(const Duration(milliseconds: 500), () {
-      setState(() {
-        throttledCounter++;
-       });
-    });
-  }
-```
-### Use type parameter to pass BehaviorType to change the behavior of the debounce or throttle
-```dart
-void _handleTextFieldChange(String value) {
+  const duration = Duration(milliseconds: 500);
   _debouncer.debounce(
-    const Duration(milliseconds: 500),
-    () {
+    duration: duration,
+    onDebounce: () {
       setState(() {
         debouncedText = value;
       });
     },
-    ///This behavior will execute the callback immediately and after the specified time duration
-    type: BehaviorType.leadingAndTrailing
   );
 }
-```
+```  
+
+### Throttling
+
+```dart  
+void _handleTextFieldChange(String value) {
+  const duration = Duration(milliseconds: 500);
+
+  _throttler.throttle(
+    duration: duration,
+    onThrottle: () {
+      setState(() {
+        throttledCounter++;
+      });
+    },
+  );
+}
+```  
+
+### Use type parameter to pass BehaviorType to change the behavior of the debounce or throttle
+```dart  
+void _handleTextFieldChange(String value) {
+  const duration = Duration(milliseconds: 500);
+  /// - [BehaviorType.leadingEdge] : The callback function is executed immediately
+  _debouncer.debounce(
+    duration: duration,
+    type: BehaviorType.leadingEdge,
+    onDebounce: () {
+      setState(() {
+        debouncedText = value;
+      });
+    },
+  );
+}
+```  
+### Cancel Debouncer or Throttler
+```dart  
+///Debouncer Cancel
+_debouncer.cancel();
+
+///Throttler Cancel
+_throttler.cancel();
+```  
 
 ## Project Created & Maintained By
 
 ### Syaif Akmal
-<a href="https://www.instagram.com/syaifakmal"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/instagram.png?raw=true" width="60">&nbsp;&nbsp;
-<a href="https://www.linkedin.com/in/syaifakmal/"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/linkedin.png?raw=true" width="60">&nbsp;&nbsp;
+<a href="https://www.instagram.com/syaifakmal"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/instagram.png?raw=true" width="60">&nbsp;&nbsp;  
+<a href="https://www.linkedin.com/in/syaifakmal/"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/linkedin.png?raw=true" width="60">&nbsp;&nbsp;  
 <a href="https://github.com/syaifakmal/"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/github.png?raw=true" width="60">
 
 ## License

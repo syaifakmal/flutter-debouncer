@@ -8,9 +8,12 @@ void main() {
       var callbackCalled = false;
       const duration = Duration(milliseconds: 500);
 
-      debouncer.debounce(duration, () {
-        callbackCalled = true;
-      });
+      debouncer.debounce(
+        duration: duration,
+        onDebounce: () {
+          callbackCalled = true;
+        },
+      );
 
       // Wait for a shorter duration than the debounce duration
       await Future.delayed(duration - const Duration(milliseconds: 100));
@@ -28,9 +31,12 @@ void main() {
       var callbackCalledCount = 0;
       const duration = Duration(milliseconds: 500);
 
-      debouncer.debounce(duration, () {
-        callbackCalledCount++;
-      });
+      debouncer.debounce(
+        duration: duration,
+        onDebounce: () {
+          callbackCalledCount++;
+        },
+      );
 
       // Wait for a shorter duration than the debounce duration
       await Future.delayed(duration - const Duration(milliseconds: 100));
@@ -38,12 +44,18 @@ void main() {
       expect(callbackCalledCount, 0);
 
       // Call the debouncer multiple times within the debounce duration
-      debouncer.debounce(duration, () {
-        callbackCalledCount++;
-      });
-      debouncer.debounce(duration, () {
-        callbackCalledCount++;
-      });
+      debouncer.debounce(
+        duration: duration,
+        onDebounce: () {
+          callbackCalledCount++;
+        },
+      );
+      debouncer.debounce(
+        duration: duration,
+        onDebounce: () {
+          callbackCalledCount++;
+        },
+      );
 
       // Wait for the debounce duration to elapse
       await Future.delayed(duration);
@@ -56,9 +68,12 @@ void main() {
       var callbackCalled = false;
       const duration = Duration(milliseconds: 500);
 
-      debouncer.debounce(duration, () {
-        callbackCalled = true;
-      });
+      debouncer.debounce(
+        duration: duration,
+        onDebounce: () {
+          callbackCalled = true;
+        },
+      );
 
       // Wait for a shorter duration than the debounce duration
       await Future.delayed(duration - const Duration(milliseconds: 100));
@@ -80,11 +95,11 @@ void main() {
       const duration = Duration(milliseconds: 500);
 
       debouncer.debounce(
-        duration,
-        () {
+        duration: duration,
+        type: BehaviorType.leadingEdge,
+        onDebounce: () {
           callbackCalled = true;
         },
-        type: BehaviorType.leadingEdge,
       );
 
       // Wait for a shorter duration than the debounce duration
@@ -105,11 +120,11 @@ void main() {
       const duration = Duration(milliseconds: 500);
 
       debouncer.debounce(
-        duration,
-        () {
+        duration: duration,
+        type: BehaviorType.leadingAndTrailing,
+        onDebounce: () {
           callbackCalled = !callbackCalled;
         },
-        type: BehaviorType.leadingAndTrailing,
       );
 
       // Wait for a shorter duration than the debounce duration
