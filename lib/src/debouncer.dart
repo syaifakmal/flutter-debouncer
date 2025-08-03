@@ -28,16 +28,23 @@ class Debouncer {
   void debounce({
     required Duration duration,
     required Function() onDebounce,
-    @Deprecated("Please use the 'type' parameter instead.") bool isLeadingEdge = false,
+    @Deprecated("Please use the 'type' parameter instead.")
+    bool isLeadingEdge = false,
     BehaviorType type = BehaviorType.trailingEdge,
   }) {
-    if (type == BehaviorType.leadingEdge || type == BehaviorType.leadingAndTrailing) {
+    // If we aren't in a debounce period, and we should call the callback
+    // on the leading edge, then call the callback immediately
+    if (_debounceTimer == null &&
+        (type == BehaviorType.leadingEdge ||
+            type == BehaviorType.leadingAndTrailing)) {
       onDebounce();
     }
 
     _debounceTimer?.cancel();
     _debounceTimer = Timer(duration, () {
-      if (type == BehaviorType.trailingEdge || type == BehaviorType.leadingAndTrailing) {
+      _debounceTimer = null;
+      if (type == BehaviorType.trailingEdge ||
+          type == BehaviorType.leadingAndTrailing) {
         onDebounce();
       }
     });
@@ -49,5 +56,6 @@ class Debouncer {
   /// debounced callback associated with that timer will not be invoked.
   void cancel() {
     _debounceTimer?.cancel();
+    _debounceTimer = null;
   }
 }
