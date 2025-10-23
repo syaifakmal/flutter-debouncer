@@ -22,7 +22,8 @@ class Throttler {
   void throttle({
     required Duration duration,
     required Function() onThrottle,
-    @Deprecated("Throttle now uses leading-edge behavior by default.") BehaviorType type = BehaviorType.leadingEdge,
+    @Deprecated("Throttle now uses leading-edge behavior by default.")
+    BehaviorType type = BehaviorType.leadingEdge,
   }) {
     if (_throttleTimer == null) {
       _throttleTimer = Timer(duration, () {

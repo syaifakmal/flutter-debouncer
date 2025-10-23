@@ -51,7 +51,8 @@ class _MyScreenState extends State<MyScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const DebounceExample()),
+                    MaterialPageRoute(
+                        builder: (context) => const DebounceExample()),
                   );
                 },
                 child: const Text('Debouncer'),
@@ -60,7 +61,8 @@ class _MyScreenState extends State<MyScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ThrottleExample()),
+                    MaterialPageRoute(
+                        builder: (context) => const ThrottleExample()),
                   );
                 },
                 child: const Text('Throttle'),

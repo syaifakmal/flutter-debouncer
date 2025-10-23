@@ -1,3 +1,5 @@
+## 2.1.1
+Small changes in the documentation
 ## 2.1.0
 
 ### Removing BehaviorType.leadingAndTrailing

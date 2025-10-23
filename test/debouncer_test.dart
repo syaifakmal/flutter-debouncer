@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Debouncer', () {
-    test('Trailing Edge: Callback is called after the specified duration', () async {
+    test('Trailing Edge: Callback is called after the specified duration',
+        () async {
       final debouncer = Debouncer();
       const duration = Duration(milliseconds: 500);
 
@@ -19,14 +20,20 @@ void main() {
 
       await Future.delayed(duration - const Duration(milliseconds: 100));
 
-      expect(callbackCalled, false, reason: 'Callbacks should not execute before the full debounce duration.');
+      expect(callbackCalled, false,
+          reason:
+              'Callbacks should not execute before the full debounce duration.');
 
       await Future.delayed(const Duration(milliseconds: 100));
 
-      expect(callbackCalled, true, reason: 'Callbacks should execute after the debounce duration has fully elapsed.');
+      expect(callbackCalled, true,
+          reason:
+              'Callbacks should execute after the debounce duration has fully elapsed.');
     });
 
-    test('Trailing Edge: Multiple calls within the debounce duration should cancel previous timers, executing only the last callback', () async {
+    test(
+        'Trailing Edge: Multiple calls within the debounce duration should cancel previous timers, executing only the last callback',
+        () async {
       final debouncer = Debouncer();
       const duration = Duration(milliseconds: 500);
 
@@ -43,7 +50,9 @@ void main() {
       // Wait slightly less than the debounce duration to stay within the active debounce window
       await Future.delayed(duration - const Duration(milliseconds: 100));
 
-      expect(callbackCalledCount, 0, reason: 'Trailing-edge callbacks should only run after the full duration.');
+      expect(callbackCalledCount, 0,
+          reason:
+              'Trailing-edge callbacks should only run after the full duration.');
 
       // Call debounce again before the duration ends — this should cancel the previous timer
       debouncer.debounce(
@@ -63,10 +72,14 @@ void main() {
       // Wait for the final debounce duration to complete
       await Future.delayed(duration);
 
-      expect(callbackCalledCount, 1, reason: 'Each new call within the debounce window should cancel the previous one, leaving only the last callback to execute.');
+      expect(callbackCalledCount, 1,
+          reason:
+              'Each new call within the debounce window should cancel the previous one, leaving only the last callback to execute.');
     });
 
-    test('Trailing Edge: Cancel should prevent the scheduled callback from executing', () async {
+    test(
+        'Trailing Edge: Cancel should prevent the scheduled callback from executing',
+        () async {
       final debouncer = Debouncer();
       const duration = Duration(milliseconds: 500);
 
@@ -82,14 +95,16 @@ void main() {
 
       await Future.delayed(duration - const Duration(milliseconds: 100));
 
-      expect(callbackCalled, false, reason: 'Callback should not have executed before duration ends.');
+      expect(callbackCalled, false,
+          reason: 'Callback should not have executed before duration ends.');
 
       debouncer.cancel();
 
       // Wait slightly less than the debounce duration to stay within the active debounce window
       await Future.delayed(const Duration(milliseconds: 100));
 
-      expect(callbackCalled, false, reason: 'Callback should remain uncalled after cancellation.');
+      expect(callbackCalled, false,
+          reason: 'Callback should remain uncalled after cancellation.');
 
       // Schedule another debounced callback after cancellation
       debouncer.debounce(
@@ -102,10 +117,13 @@ void main() {
 
       await Future.delayed(duration);
 
-      expect(callbackCalled, true, reason: 'Callback should execute after re-scheduling.');
+      expect(callbackCalled, true,
+          reason: 'Callback should execute after re-scheduling.');
     });
 
-    test('Leading Edge: Callback should be executed immediately on the first call', () async {
+    test(
+        'Leading Edge: Callback should be executed immediately on the first call',
+        () async {
       final debouncer = Debouncer();
       const duration = Duration(milliseconds: 500);
 
@@ -122,10 +140,14 @@ void main() {
       // Wait slightly less than the debounce duration to stay within the active debounce window
       await Future.delayed(duration - const Duration(milliseconds: 100));
 
-      expect(callbackCalled, true, reason: 'The callback should execute immediately on the first invocation.');
+      expect(callbackCalled, true,
+          reason:
+              'The callback should execute immediately on the first invocation.');
     });
 
-    test('Leading Edge: Subsequent calls within the active debounce period should be ignored', () async {
+    test(
+        'Leading Edge: Subsequent calls within the active debounce period should be ignored',
+        () async {
       final debouncer = Debouncer();
       const duration = Duration(milliseconds: 500);
 
@@ -139,7 +161,8 @@ void main() {
         },
       );
 
-      expect(callbackCalledCount, 1, reason: 'The first leading-edge call should execute immediately.');
+      expect(callbackCalledCount, 1,
+          reason: 'The first leading-edge call should execute immediately.');
 
       // Wait slightly less than the debounce duration to stay within the active debounce window
       await Future.delayed(duration - const Duration(milliseconds: 100));
@@ -154,10 +177,14 @@ void main() {
 
       await Future.delayed(const Duration(milliseconds: 100));
 
-      expect(callbackCalledCount, 1, reason: 'Subsequent calls within the debounce window should be ignored when using leading-edge behavior.');
+      expect(callbackCalledCount, 1,
+          reason:
+              'Subsequent calls within the debounce window should be ignored when using leading-edge behavior.');
     });
 
-    test('Leading Edge: Cancel should end the current debounce period, allowing immediate new calls', () async {
+    test(
+        'Leading Edge: Cancel should end the current debounce period, allowing immediate new calls',
+        () async {
       final debouncer = Debouncer();
       const duration = Duration(milliseconds: 500);
 
@@ -186,7 +213,9 @@ void main() {
         },
       );
 
-      expect(callbackCount, 2, reason: 'Canceling the debounce should allow immediate re-invocation.');
+      expect(callbackCount, 2,
+          reason:
+              'Canceling the debounce should allow immediate re-invocation.');
     });
   });
 }
