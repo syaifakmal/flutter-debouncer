@@ -21,6 +21,7 @@ class _DebounceExampleState extends State<DebounceExample> {
 
     _debouncer.debounce(
       duration: debounceDuration,
+      type: BehaviorType.leadingEdge,
       onDebounce: () {
         setState(() {
           debouncedText = value;

@@ -1,3 +1,11 @@
+## 2.1.0
+
+### Removing BehaviorType.leadingAndTrailing
+This behavior is removed to prevent duplicate callback and reduce confusion between edge modes.
+
+### Removed throttle-related behaviors
+Simplified the throttling API by defaulting to leading-edge execution, ensuring a more predictable and consistent throttling pattern.
+
 ## 2.0.0
 
 ### Debouncer and Throttler Separation
