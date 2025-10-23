@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_debouncer/flutter_debouncer.dart';
 
 void main() {
-  group('Debouncer throttle', () {
-    test('Throttle function should trigger the callback once within the duration', () async {
+  group('Throttler', () {
+    test('Throttle: Callback should trigger only once within the throttle duration, ignoring rapid subsequent calls', () async {
       final throttler = Throttler();
       const duration = Duration(milliseconds: 500);
 
@@ -33,16 +33,10 @@ void main() {
 
       await Future.delayed(const Duration(milliseconds: 300));
 
-      // Expect that the callback is triggered exactly once within the duration
-      expect(callbackCount, 1);
-
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      // Expect that the callback is triggered exactly once within the duration
-      expect(callbackCount, 1);
+      expect(callbackCount, 1, reason: 'Throttle should only trigger the callback once within the throttle window, ignoring rapid subsequent calls.');
     });
 
-    test('Throttle function should trigger the callback on leading edge', () async {
+    test('Cancel: should stop the current throttle delay and allow immediate re-throttling', () async {
       final throttler = Throttler();
       const duration = Duration(milliseconds: 500);
 
@@ -50,78 +44,26 @@ void main() {
 
       throttler.throttle(
         duration: duration,
-        type: BehaviorType.leadingEdge,
-        onThrottle: () {
+        onThrottle: () async {
           callbackCount++;
+          await Future.delayed(const Duration(milliseconds: 300));
+          throttler.cancel();
         },
       );
 
-      throttler.throttle(
-        duration: duration,
-        type: BehaviorType.leadingEdge,
-        onThrottle: () {
-          callbackCount++;
-        },
-      );
+      expect(callbackCount, 1, reason: 'Callback should execute immediately on the first call.');
 
-      throttler.throttle(
-        duration: duration,
-        type: BehaviorType.leadingEdge,
-        onThrottle: () {
-          callbackCount++;
-        },
-      );
-
+      // Wait a bit to let the first call and cancel complete
       await Future.delayed(const Duration(milliseconds: 300));
 
-      // Expect that the callback is triggered immediately on leading edge
-      expect(callbackCount, 1);
-
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      // Expect that the callback is triggered once within the duration
-      expect(callbackCount, 1);
-    });
-
-    test('Throttle function should trigger the callback on both edges', () async {
-      final throttler = Throttler();
-      const duration = Duration(milliseconds: 500);
-
-      int callbackCount = 0;
-
       throttler.throttle(
         duration: duration,
-        type: BehaviorType.leadingAndTrailing,
         onThrottle: () {
           callbackCount++;
         },
       );
 
-      throttler.throttle(
-        duration: duration,
-        type: BehaviorType.leadingAndTrailing,
-        onThrottle: () {
-          callbackCount++;
-        },
-      );
-
-      throttler.throttle(
-        duration: duration,
-        type: BehaviorType.leadingAndTrailing,
-        onThrottle: () {
-          callbackCount++;
-        },
-      );
-
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      // Expect that the callback is triggered immediately on leading edge
-      expect(callbackCount, 1);
-
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      // Expect that the callback is triggered once within the duration
-      expect(callbackCount, 2);
+      expect(callbackCount, 2, reason: 'Canceling should reset the throttle period, allowing immediate re-throttling.');
     });
   });
 }

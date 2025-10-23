@@ -3,53 +3,49 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Debouncer', () {
-    test('Callback is called after the specified duration', () async {
+    test('Trailing Edge: Callback is called after the specified duration', () async {
       final debouncer = Debouncer();
-      var callbackCalled = false;
       const duration = Duration(milliseconds: 500);
+
+      bool callbackCalled = false;
 
       debouncer.debounce(
         duration: duration,
+        type: BehaviorType.trailingEdge,
         onDebounce: () {
           callbackCalled = true;
         },
       );
 
-      // Wait for a shorter duration than the debounce duration
       await Future.delayed(duration - const Duration(milliseconds: 100));
 
-      expect(callbackCalled, false);
+      expect(callbackCalled, false, reason: 'Callbacks should not execute before the full debounce duration.');
 
-      // Wait for the debounce duration to elapse
       await Future.delayed(const Duration(milliseconds: 100));
 
-      expect(callbackCalled, true);
+      expect(callbackCalled, true, reason: 'Callbacks should execute after the debounce duration has fully elapsed.');
     });
 
-    test('Multiple calls within the debounce duration cancel previous timers', () async {
+    test('Trailing Edge: Multiple calls within the debounce duration should cancel previous timers, executing only the last callback', () async {
       final debouncer = Debouncer();
-      var callbackCalledCount = 0;
       const duration = Duration(milliseconds: 500);
 
+      int callbackCalledCount = 0;
+
       debouncer.debounce(
         duration: duration,
+        type: BehaviorType.trailingEdge,
         onDebounce: () {
           callbackCalledCount++;
         },
       );
 
-      // Wait for a shorter duration than the debounce duration
+      // Wait slightly less than the debounce duration to stay within the active debounce window
       await Future.delayed(duration - const Duration(milliseconds: 100));
 
-      expect(callbackCalledCount, 0);
+      expect(callbackCalledCount, 0, reason: 'Trailing-edge callbacks should only run after the full duration.');
 
-      // Call the debouncer multiple times within the debounce duration
-      debouncer.debounce(
-        duration: duration,
-        onDebounce: () {
-          callbackCalledCount++;
-        },
-      );
+      // Call debounce again before the duration ends — this should cancel the previous timer
       debouncer.debounce(
         duration: duration,
         onDebounce: () {
@@ -57,42 +53,63 @@ void main() {
         },
       );
 
-      // Wait for the debounce duration to elapse
+      debouncer.debounce(
+        duration: duration,
+        onDebounce: () {
+          callbackCalledCount++;
+        },
+      );
+
+      // Wait for the final debounce duration to complete
       await Future.delayed(duration);
 
-      expect(callbackCalledCount, 1);
+      expect(callbackCalledCount, 1, reason: 'Each new call within the debounce window should cancel the previous one, leaving only the last callback to execute.');
     });
 
-    test('Cancel cancels the currently scheduled callback', () async {
+    test('Trailing Edge: Cancel should prevent the scheduled callback from executing', () async {
       final debouncer = Debouncer();
-      var callbackCalled = false;
       const duration = Duration(milliseconds: 500);
+
+      bool callbackCalled = false;
 
       debouncer.debounce(
         duration: duration,
+        type: BehaviorType.trailingEdge,
         onDebounce: () {
           callbackCalled = true;
         },
       );
 
-      // Wait for a shorter duration than the debounce duration
       await Future.delayed(duration - const Duration(milliseconds: 100));
 
-      expect(callbackCalled, false);
+      expect(callbackCalled, false, reason: 'Callback should not have executed before duration ends.');
 
-      // Cancel the currently scheduled callback
       debouncer.cancel();
 
-      // Wait for the debounce duration to elapse
+      // Wait slightly less than the debounce duration to stay within the active debounce window
       await Future.delayed(const Duration(milliseconds: 100));
 
-      expect(callbackCalled, false);
+      expect(callbackCalled, false, reason: 'Callback should remain uncalled after cancellation.');
+
+      // Schedule another debounced callback after cancellation
+      debouncer.debounce(
+        duration: duration,
+        type: BehaviorType.trailingEdge,
+        onDebounce: () {
+          callbackCalled = true;
+        },
+      );
+
+      await Future.delayed(duration);
+
+      expect(callbackCalled, true, reason: 'Callback should execute after re-scheduling.');
     });
 
-    test('Leading edge: Callback is called immediately on the first call', () async {
+    test('Leading Edge: Callback should be executed immediately on the first call', () async {
       final debouncer = Debouncer();
-      var callbackCalled = false;
       const duration = Duration(milliseconds: 500);
+
+      bool callbackCalled = false;
 
       debouncer.debounce(
         duration: duration,
@@ -102,41 +119,74 @@ void main() {
         },
       );
 
-      // Wait for a shorter duration than the debounce duration
-      await Future.delayed(const Duration(milliseconds: 100));
+      // Wait slightly less than the debounce duration to stay within the active debounce window
+      await Future.delayed(duration - const Duration(milliseconds: 100));
 
-      expect(callbackCalled, true);
-
-      // Wait for the debounce duration to elapse
-      await Future.delayed(duration);
-
-      // Ensure that the callback is called only once
-      expect(callbackCalled, true);
+      expect(callbackCalled, true, reason: 'The callback should execute immediately on the first invocation.');
     });
 
-    test('Trailing and Leading Edge: Callback is called immediately on the first call and after the specified duration', () async {
+    test('Leading Edge: Subsequent calls within the active debounce period should be ignored', () async {
       final debouncer = Debouncer();
-      var callbackCalled = false;
       const duration = Duration(milliseconds: 500);
+
+      int callbackCalledCount = 0;
 
       debouncer.debounce(
         duration: duration,
-        type: BehaviorType.leadingAndTrailing,
+        type: BehaviorType.leadingEdge,
         onDebounce: () {
-          callbackCalled = !callbackCalled;
+          callbackCalledCount++;
         },
       );
 
-      // Wait for a shorter duration than the debounce duration
+      expect(callbackCalledCount, 1, reason: 'The first leading-edge call should execute immediately.');
+
+      // Wait slightly less than the debounce duration to stay within the active debounce window
+      await Future.delayed(duration - const Duration(milliseconds: 100));
+
+      debouncer.debounce(
+        duration: duration,
+        type: BehaviorType.leadingEdge,
+        onDebounce: () {
+          callbackCalledCount++;
+        },
+      );
+
       await Future.delayed(const Duration(milliseconds: 100));
 
-      expect(callbackCalled, true);
+      expect(callbackCalledCount, 1, reason: 'Subsequent calls within the debounce window should be ignored when using leading-edge behavior.');
+    });
 
-      // Wait for the debounce duration to elapse
-      await Future.delayed(duration);
+    test('Leading Edge: Cancel should end the current debounce period, allowing immediate new calls', () async {
+      final debouncer = Debouncer();
+      const duration = Duration(milliseconds: 500);
 
-      // Ensure that the callback is called only once
-      expect(callbackCalled, false);
+      int callbackCount = 0;
+
+      debouncer.debounce(
+        duration: duration,
+        type: BehaviorType.leadingEdge,
+        onDebounce: () async {
+          callbackCount++;
+          // Cancel the current debounce cycle early
+          await Future.delayed(const Duration(milliseconds: 300));
+          debouncer.cancel();
+        },
+      );
+
+      // Wait briefly to ensure the first call executes and cancels the period
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      // Immediately trigger another leading-edge debounce call after cancellation
+      debouncer.debounce(
+        duration: duration,
+        type: BehaviorType.leadingEdge,
+        onDebounce: () {
+          callbackCount++;
+        },
+      );
+
+      expect(callbackCount, 2, reason: 'Canceling the debounce should allow immediate re-invocation.');
     });
   });
 }

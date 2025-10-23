@@ -102,8 +102,7 @@ _throttler.cancel();
 
 ## Project Created & Maintained By
 
-### Syaif Akmal
-<a href="https://www.instagram.com/syaifakmal"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/instagram.png?raw=true" width="60">&nbsp;&nbsp;  
+### Syaif Akmal  
 <a href="https://www.linkedin.com/in/syaifakmal/"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/linkedin.png?raw=true" width="60">&nbsp;&nbsp;  
 <a href="https://github.com/syaifakmal/"><img src="https://github.com/syaifakmal/flutter-debouncer/blob/main/example/assets/github.png?raw=true" width="60">
 

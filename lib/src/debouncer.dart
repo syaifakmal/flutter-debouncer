@@ -19,25 +19,20 @@ class Debouncer {
   /// to execute the [onDebounce] function after the [duration] has passed without
   /// any new calls. Use [BehaviorType.leadingEdge] to execute the [onDebounce]
   /// function immediately on the first call and postpone any subsequent calls
-  /// within the [duration]. Use [BehaviorType.leadingAndTrailing] to execute
-  /// the [onDebounce] function both on the leading and trailing edges of the
-  /// timer.
-  ///
-  /// [isLeadingEdge] is deprecated and may not have the desired flexibility.
-  /// It is recommended to use the [type] parameter instead.
+  /// within the [duration].
   void debounce({
     required Duration duration,
     required Function() onDebounce,
-    @Deprecated("Please use the 'type' parameter instead.") bool isLeadingEdge = false,
     BehaviorType type = BehaviorType.trailingEdge,
   }) {
-    if (type == BehaviorType.leadingEdge || type == BehaviorType.leadingAndTrailing) {
+    if (_debounceTimer == null && type == BehaviorType.leadingEdge) {
       onDebounce();
     }
 
     _debounceTimer?.cancel();
     _debounceTimer = Timer(duration, () {
-      if (type == BehaviorType.trailingEdge || type == BehaviorType.leadingAndTrailing) {
+      _debounceTimer = null;
+      if (type == BehaviorType.trailingEdge) {
         onDebounce();
       }
     });
@@ -49,5 +44,6 @@ class Debouncer {
   /// debounced callback associated with that timer will not be invoked.
   void cancel() {
     _debounceTimer?.cancel();
+    _debounceTimer = null;
   }
 }
